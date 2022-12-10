@@ -36,11 +36,15 @@ const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" 
 const data = await response.json();
 if (options.j) {
 	console.log(data);
-	process.exit(1);
+	process.exit(0);
 }
-let days = 1;
-if (options.d) {
-	days = options.d;
+let days = options.d;
+if (typeof options.d === 'undefined') {
+	days = 1;
+}
+if (days < 0 || days > 6) {
+	console.log("Day option -d must be 0-6");
+	process.exit(1);
 }
 let result = "probably won't";
 if (data.daily.precipitation_hours[days] > 0) {
