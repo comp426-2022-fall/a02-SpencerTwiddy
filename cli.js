@@ -4,31 +4,53 @@ import process from 'process';
 import moment from 'moment-timezone';
 import fetch from 'node-fetch';
 var options = minimist(process.argv.slice(2));
-console.log("helium");
 if (options.h) {
 	var help_message = `Usage: galosh.js [options] -[n|s] LATITUDE -[e|w] LONGITUDE -z TIME_ZONE
-    -h            Show this help message and exit.
-    -n, -s        Latitude: N positive; S negative.
-    -e, -w        Longitude: E positive; W negative.
-    -z            Time zone: uses tz.guess() from moment-timezone by default.
-    -d 0-6        Day to retrieve weather: 0 is today; defaults to 1.
-    -j            Echo pretty JSON from open-meteo API and exit.`
+  -h            Show this help message and exit.
+  -n, -s        Latitude: N positive; S negative.
+  -e, -w        Longitude: E positive; W negative.
+  -z            Time zone: uses tz.guess() from moment-timezone by default.
+  -d 0-6        Day to retrieve weather: 0 is today; defaults to 1.
+  -j            Echo pretty JSON from open-meteo API and exit.`
 	console.log(help_message);
 	process.exit(0);
 }
-if (!(options.n || options.s) || !(options.w || options.e)) {
+if ((!options.n + !options.s != 1) || (!options.w + !options.e != 1)) {
 	var compass_error = `You have compass error`;
 	console.log(compass_error);
+	process.exit(1);
 }
-let lat_inp = options.w;
-if (options.e) {
-	lat_inp = options.e;
+let long_inp = options.e;
+if (options.w) {
+	long_inp = -options.w;
 }
-let long_inp = options.n;
+let lat_inp = options.n;
 if (options.s) {
-	long_inp = options.s;
+	lat_inp = -options.s;
 }
-const timezone = moment.tz.guess();
-console.log(timezone);
-const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + lat_inp + "&longitude=" + long_inp);
-console.log("made it to the end");
+let timezone = moment.tz.guess();
+if (options.z) {
+	timezone = options.z;
+}
+const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + lat_inp + "&longitude=" + long_inp + "&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_hours,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=" + timezone);
+const data = await response.json();
+if (options.j) {
+	console.log(data);
+	process.exit(0);
+}
+let days = 1;
+if (options.d) {
+	days = options.d;
+}
+let result = "probably won't";
+if (data.daily.precipitation_hours[days] > 0) {
+	result = "might";
+}
+let readout = "You " + result + " need your galoshes ";
+if (days == 0) {
+  console.log(readout + "today.")
+} else if (days > 1) {
+  console.log(readout + "in " + days + " days.")
+} else {
+  console.log(readout + "tomorrow.")
+}
