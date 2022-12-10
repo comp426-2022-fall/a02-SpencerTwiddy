@@ -16,7 +16,7 @@ if (options.h) {
 	console.log(help_message);
 	process.exit(0);
 }
-if ((!options.n + !options.s != 1) || (!options.w + !options.e != 1)) {
+if (((!options.n + !options.s != 1) || (!options.w + !options.e != 1)) && typeof options.j === 'undefined') {
 	var compass_error = `You have compass error`;
 	console.log(compass_error);
 	process.exit(1);
@@ -32,6 +32,10 @@ if (options.s) {
 let timezone = moment.tz.guess();
 if (options.z) {
 	timezone = options.z;
+}
+if (typeof lat_inp === 'undefined' && typeof long_inp === 'undefined') {
+	lat_inp = 35.996437;
+	long_inp = -80.01123;
 }
 const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + lat_inp + "&longitude=" + long_inp + "&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_hours,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=" + timezone);
 const data = await response.json();
