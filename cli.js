@@ -33,7 +33,7 @@ let timezone = moment.tz.guess();
 if (options.z) {
 	timezone = options.z;
 }
-if ((typeof lat_inp === 'undefined' || typeof long_inp === 'undefined') && typeof options.j === 'undefined') {
+if ((typeof lat_inp === 'undefined' || typeof long_inp === 'undefined') && typeof options.j !== 'undefined') {
 	var json_error = `Latitude must be in range`;
 	console.log(json_error);
 	process.exit(1);
