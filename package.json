@@ -12,6 +12,9 @@
   },
   "author": "Spencer Twiddy",
   "license": "GPL-3.0-or-later",
+  "bin": {
+    "galosh.js": "./cli.js"
+  },
   "bugs": {
     "url": "https://github.com/comp426-2022-fall/a02-SpencerTwiddy/issues"
   },
