@@ -17,7 +17,7 @@ if (options.h) {
 	process.exit(0);
 }
 if (((!options.n + !options.s != 1) || (!options.w + !options.e != 1)) && typeof options.j === 'undefined') {
-	var compass_error = `Latitude must be in range`;
+	let compass_error = `Latitude must be in range`;
 	console.log(compass_error);
 	process.exit(1);
 }
@@ -34,7 +34,7 @@ if (options.z) {
 	timezone = options.z;
 }
 if ((typeof lat_inp === 'undefined' || typeof long_inp === 'undefined') && typeof options.j !== 'undefined') {
-	var json_error = `Latitude must be in range`;
+	let json_error = `Latitude must be in range`;
 	console.log(json_error);
 	process.exit(0);
 }
