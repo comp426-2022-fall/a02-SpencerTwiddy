@@ -3,6 +3,7 @@ import minimist from 'minimist';
 import process from 'process';
 import moment from 'moment-timezone';
 import fetch from 'node-fetch';
+import fs from 'fs';
 var options = minimist(process.argv.slice(2));
 if (options.h) {
 	var help_message = `Usage: galosh.js [options] -[n|s] LATITUDE -[e|w] LONGITUDE -z TIME_ZONE
@@ -35,7 +36,7 @@ if (options.z) {
 const response = await fetch("https://api.open-meteo.com/v1/forecast?latitude=" + lat_inp + "&longitude=" + long_inp + "&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum,precipitation_hours,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&current_weather=true&temperature_unit=fahrenheit&windspeed_unit=mph&precipitation_unit=inch&timezone=" + timezone);
 const data = await response.json();
 if (options.j) {
-	console.log(data);
+	console.log(JSON.stringify(data));
 	process.exit(0);
 }
 let days = options.d;
